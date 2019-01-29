@@ -1,9 +1,10 @@
-var http = require('http');
-var requestListener = function handler(req,res){
-	res.writeHead(200, {'Content-type':'text/plain'});
-	res.end('Hello World\n');
-};
+const http = require('http');
+const hostname = '127.0.0.1';
+const port = '1337';
 
-http.createServer(requestListener).listen(1337, '127.0.0.1');
-
-console.log('Server is running at "http://127.0.0.1:1337"');
+http.createServer((request, response) => {
+	response.writeHead(200);
+	response.end('Hello World\n')
+}).listen(port, hostname, () => {
+	console.log('server is at http://${hostname}:${port}');
+});
