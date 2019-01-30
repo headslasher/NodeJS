@@ -1,6 +1,13 @@
 {
+  "ecmaVersion": 6,
   "plugins": {
     "outline": {
+      
+    },
+    "jshint": {
+      
+    },
+    "es_modules": {
       
     },
     "node": {
