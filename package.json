@@ -17,6 +17,7 @@
   "readmeFilename": "README.md",
   "dependencies": {
     "express": "^4.16.4",
+    "jade": "^1.11.0",
     "uglify-js": "^3.4.9"
   }
 }

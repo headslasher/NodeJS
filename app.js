@@ -6,6 +6,12 @@ var hostname = '127.0.0.1';
 
 app.use(express.static('public'));
 
+app.set('view engine','jade');
+app.set('views','./views')
+app.get('/template', function(req, res){
+	res.render('temp');
+});
+
 app.get('/dynamic', function(req, res){
 	
 	var date = Date();
