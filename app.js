@@ -1,21 +1,23 @@
-var express = require('express');
+const express = require('express');
 
-var app = express();
-var port = '3000';
-var hostname = '127.0.0.1';
+const app = express();
+const port = '3000';
+const hostname = '127.0.0.1';
 
 app.use(express.static('public'));
 
-
-app.get('/topic', function(req, res){
+app.get('/topic/:topicId', (req, res) => {
 	
-	var topics = [
+	let topics;
+	topics = [
 			'This is JavaScript!!!',
 			'This is NodeJS!!!',
 			'This is Express!!!'
 	];
 	
-	var link = `
+	let link;
+	
+	link = `
 	
 	<a href="/topic?id=0">JavaScript</a><br>
 	<a href="/topic?id=1">NodeJS</a><br>
@@ -23,9 +25,13 @@ app.get('/topic', function(req, res){
 	
 	`
 	
-	res.send(link + topics[req.query.id]);
-	
+//	res.send(link + topics[req.query.id]);
+	res.send(link + topics[req.params.topicId]);	
 });
+
+app.get('/topic/:topicId/:mode', (req, res) => {
+	res.send('topicId : ' + req.params.topicId + ', mode : ' + req.params.mode);
+}); //sementic URL
 
 
 app.set('view engine','jade');
