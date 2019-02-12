@@ -1,10 +1,40 @@
 const express = require('express');
-
 const app = express();
+const bodyParser = require('body-parser');
 const port = '3000';
 const hostname = '127.0.0.1';
 
+app.set('view engine','jade');
+app.set('views','./views');
+app.locals.pretty = true;/*템플릿 들여쓰기*/
+
 app.use(express.static('public'));
+app.use(bodyParser.urlencoded({extended : false}));
+
+
+app.get('/post', (req, res) => {
+	
+	res.render('post');
+	
+});
+
+app.get('/form_receiver', (req, res) => {
+	
+	let text = req.query.text;
+	let textarea = req.query.textarea;
+	
+	res.send(text + ' + ' + textarea + ' + GET ' );
+	
+});
+
+app.post('/form_receiver', (req, res)=> {
+	
+	let text = req.body.text;
+	let textarea = req.body.textarea;
+	
+	res.send(text + ' + ' + textarea + ' + POST ' );
+	
+});
 
 app.get('/topic/:topicId', (req, res) => {
 	
@@ -14,18 +44,14 @@ app.get('/topic/:topicId', (req, res) => {
 			'This is NodeJS!!!',
 			'This is Express!!!'
 	];
-	
 	let link;
 	
 	link = `
-	
 	<a href="/topic?id=0">JavaScript</a><br>
 	<a href="/topic?id=1">NodeJS</a><br>
 	<a href="/topic?id=2">Express</a><br>
-	
 	`
-	
-//	res.send(link + topics[req.query.id]);
+
 	res.send(link + topics[req.params.topicId]);	
 });
 
@@ -33,11 +59,6 @@ app.get('/topic/:topicId/:mode', (req, res) => {
 	res.send('topicId : ' + req.params.topicId + ', mode : ' + req.params.mode);
 }); //sementic URL
 
-
-app.set('view engine','jade');
-app.set('views','./views');
-
-app.locals.pretty = true;/*템플릿 들여쓰기*/
 
 app.get('/template', function(req, res){
 	res.render('temp', {date:Date(), string:'String'});

@@ -1,0 +1,19 @@
+doctype html
+html
+	head
+		meta(charset='UTF-8')
+		title NodeJS POST
+	body
+		form(action='/form_receiver', method='GET')
+			input(type='text', name='text', placeholder='get')
+			br
+			textarea(name='textarea', placeholder='get')
+			br
+			input(type='submit', value='GET제출')
+		
+		form(action='/form_receiver', method='POST')
+			input(type='text', name='text', placeholder='post')
+			br
+			textarea(name='textarea', placeholder='post')
+			br
+			input(type='submit', value='POST제출')
