@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const fs = require('fs')
 
 app.set('views','./views_file');
 app.set('view engine', 'pug');
@@ -17,8 +18,13 @@ app.post('/topic', (req, res)=>{
 	
 	let text = req.body.text;
 	let textarea = req.body.textarea;
-	res.send(text+' and '+textarea);
 	
+	fs.writeFile('data/'+text, textarea, (err) => {
+		if(err){
+			res.status(500).send('internal server error!!');
+		}
+		res.send(' text = '+text+' textarea = '+textarea);
+	});
 });
 
 app.listen(4000, ()=>{
