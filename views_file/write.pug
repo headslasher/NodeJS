@@ -4,10 +4,10 @@ html
 		meta(charset='UTF-8')
 		title Hi
 	body
-		h1 Hi!!!
+		h1 Write Content
 		form(name='form', action='/topic', method='POST')
-			input(type='text', name='text')
+			input(type='text', name='title', size='50' placeholder='title')
 			p
-			textarea(name='textarea')
+			textarea(name='content', cols='52', rows='5', placeholder='content')
 			p
 			input(type='submit', value='제출')
