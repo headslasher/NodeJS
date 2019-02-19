@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const fs = require('fs')
+const fs = require('fs');
 
 app.set('views','./views_file');
 app.set('view engine', 'pug');
@@ -52,9 +52,13 @@ app.post('/topic/write', (req, res)=>{
 
 app.post('/topic/delete', (req, res)=>{
 	
-	fs.unlink(path, function() {
-		
-	})
+	fs.unlink('data/'+title, (err) => {
+		if(err){
+			res.status(500).send('internal server error!!');
+		}
+		console.log('delete complete')
+		res.redirect('/topic');
+	});
 });
 
 app.listen(4000, ()=>{

@@ -3,6 +3,7 @@ html
 	head
 		meta(charset='UTF-8')
 		title LIST
+		script 
 	body
 		h2 글 목록
 		ul
@@ -11,15 +12,14 @@ html
 					a(href='/topic/'+title)= title		
 					
 		h2 글 내용
-		
+
 		div(name='title')= title
-		
-		div(name='content')= content
-		
+		div(name='content')= content	
+
 		hr
 			
 		h2 글쓰기	
-		form(name='form', action='/topic/write', method='POST')
+		form(name='formWrite', action='/topic/write', method='POST')
 			input(type='text', name='title', size='50' placeholder='title')
 			p
 			textarea(name='content', cols='52', rows='5', placeholder='content')
