@@ -17,17 +17,17 @@ oracledb.getConnection(
     }
     
 // SELECT    
-//    let sql = 'SELECT * FROM topic';
-//    connection.execute(sql, (err, result) => {
-//         if (err) {
-//           console.error(err.message);
-//           doRelease(connection);
-//           return;
-//         }
-//         console.log(result.rows);
-//         doRelease(connection);
-//    });
-//  });
+    let sql = 'SELECT * FROM topic';
+    connection.execute(sql, (err, result) => {
+         if (err) {
+           console.error(err.message);
+           doRelease(connection);
+           return;
+         }
+         console.log(result.rows);
+         doRelease(connection);
+    });
+  });
     
 //INSERT
     let sql = 'INSERT INTO topic(title, bcontent, bid) VALUES (:title, :bcontent, :bid)';
