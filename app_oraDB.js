@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const connectDB = require('./connectDB');
 
 app.set('views','./views_file');
 app.set('view engine', 'pug');
@@ -16,27 +15,52 @@ app.get('/topic/write', (req, res)=>{
 });
 
 app.get(['/topic', '/topic/:title'], (req, res)=>{
-	
-	fs.readdir('data', (err, files) => {
-		let title = req.params.title;
-		console.log(title);
-		
-		if(err){
-			res.status(500).send('internal server error!!')
-		}
-		
-		if(title){
-			fs.readFile('data/'+title, 'UTF-8',  (err, data) => {
-				if(err){
-					res.status(500).send('internal server error!!')
-				}
-				res.render('main', {topics:files, title:title, content:data});
-			})			
-		} else {
-			res.render('main', {topics:files, title:'Welcome', content:'Homepage'});
-		}
-	})
+	conn.;
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.post('/topic/write', (req, res)=>{
 	

@@ -1,3 +1,42 @@
+console.log("Hello world!");//helloworld.js
+
+
+var a = [3,1,2];
+
+function b(v1, v2){
+	console.log('c', v1, v2);
+	return v1-v2;
+}/*callback함수*/
+
+a.sort(b);
+console.log(a);
+
+/* 익명함수
+a.sort(
+function (v1, v2){
+	console.log('c', v1, v2);
+	return v1-v2;	
+});
+*/
+//callback.js
+
+var fs = require('fs');
+
+//동기
+console.log('데이터 로드 전');
+var data = fs.readFileSync('read.txt',{encoding:'UTF8'});
+console.log(data);
+console.log('데이터 로드 후'+'\n');
+
+//비동기
+console.log('데이터 로드 전');
+fs.readFile('read.txt', {encoding:'UTF8'}, function(err, data) {
+	console.log('데이터 로드 중');
+	console.log(data);
+});
+console.log('데이터 로드 후');
+//sync_async.js
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -105,3 +144,18 @@ app.get('/login', function(req, res){
 app.listen(3000, function() {
 	console.log('server port 3000 connected');
 });/*웹 서버 호출*/
+
+//app.js
+
+const http = require('http');
+
+const hostname = '127.0.0.1';
+const port = '1337';
+
+http.createServer((request, response) => {
+	response.writeHead(200);
+	response.end('Hello World\n')
+}).listen(port, hostname, () => {
+	console.log('server is at http://${hostname}:${port}');
+});
+//server.js
