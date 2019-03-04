@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const connectDB = require('./connectDB');
 
 app.set('views','./views_file');
 app.set('view engine', 'pug');
