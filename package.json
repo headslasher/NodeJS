@@ -17,6 +17,7 @@
   "readmeFilename": "README.md",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
     "jade": "^1.11.0",
     "oracledb": "^3.1.1",
