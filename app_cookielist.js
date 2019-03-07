@@ -1,6 +1,6 @@
 const app = require('express')();
 const cookieParser = require('cookie-parser');
-app.use(cookieParser());
+app.use(cookieParser('230r8h230rh20!53%#%@%'));
 
 let products = {
 		1:{title:'number1'},
@@ -26,8 +26,8 @@ app.get('/cart/:id', (req,res)=>{
 
 	let id = req.params.id;
 
-	if(req.cookies.cart){
-		var cart = req.cookies.cart;
+	if(req.signedCookies.cart){
+		var cart = req.signedCookies.cart;
 	} else {
 		var cart = {};
 	}
@@ -36,13 +36,13 @@ app.get('/cart/:id', (req,res)=>{
 		cart[id] = 0;
 	}
 	cart[id] = parseInt(cart[id])+1;
-	res.cookie('cart',cart);
+	res.cookie('cart',cart,{signed:true});
 	res.redirect('/cart');
 });
 
 app.get('/cart',(req, res)=>{
 
-	let cart = req.cookies.cart;
+	let cart = req.signedCookies.cart;
 
 	let str = '';
 
