@@ -90,6 +90,7 @@ app.get('/welcome',(req, res)=>{
 	}
 });
 
+
 app.get('/auth/logout',(req, res)=>{
 	delete req.session.uid;
 	res.redirect('/welcome');
