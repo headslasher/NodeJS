@@ -3,6 +3,8 @@ const session = require('express-session');
 const OrientoStore = require('connect-oriento')(session);
 const bodyparser = require('body-parser');
 const md5 = require('md5');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 app.use(bodyparser.urlencoded({extended:false}));
 app.use(session({
@@ -13,6 +15,8 @@ app.use(session({
 	    server: 'host=localhost&port=2424&username=root&password=password&db=demodb'
 	})
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/count',(req, res)=>{
 	res.redirect('/tmp');
@@ -40,45 +44,42 @@ app.get('/auth/login',(req, res)=>{
 	res.send(output);
 });
 
-app.post('/auth/login',(req, res)=>{
-	const userDB=[{
-									salt : '!13t!#TG@G@$',
-									id:'admin',
-									pw:'cffa238e1cd60d78020cd97e44a39ca6',
-									name:'adminname'
-								},
-								{
-									salt : '!198wg3oihw3G@G@$',
-									id:'admin1',
-									pw:'101f4b240a8ce811dfe58b4d7aacaf9a',
-									name:'adminname1'
-								}];
+passport.use(new LocalStrategy(
+	(username, password, done)=>{
 
-	let uid = req.body.id;
-	let upw = req.body.pw;
+			const userDB=[{
+											salt : '!13t!#TG@G@$',
+											id:'admin',
+											pw:'cffa238e1cd60d78020cd97e44a39ca6',
+											name:'adminname'
+										},
+										{
+											salt : '!198wg3oihw3G@G@$',
+											id:'admin1',
+											pw:'101f4b240a8ce811dfe58b4d7aacaf9a',
+											name:'adminname1'
+										}];
 
-	for(let i =0;i<userDB.length;i++){
-		if(uid == userDB[i].id && md5(upw+userDB[i].salt) == userDB[i].pw){
-			req.session.uid = userDB[i].id;
-			req.session.upw = userDB[i].pw;
-			return req.session.save(() => {
-						res.redirect('/welcome');
-			})
-		}
-	}
-	if (req.body.id == null){
-	res.redirect('/auth/login');
-	} else {
-	req.session.uid = req.body.id;
-	let output=`
-		<div>
-			user page
-			<a href='/welcome'>welcome</a>
-		</div>
-	`;
-	res.send(output);
-	}
-});
+			let uid = username;
+			let upw = password;
+
+			for(let i =0;i<userDB.length;i++){
+				let user = userDB[i];
+				if(uid == user.id && md5(upw+user.salt) == user.pw){
+					done(null, user);
+				} else {
+					done(null, false);
+				}
+			}
+			done(null, false);
+			}
+));
+
+app.post('/auth/login',
+  passport.authenticate('local', { successRedirect: '/welcome',
+                                   failureRedirect: '/auth/login',
+                                   failureFlash: false })
+);
 
 app.get('/welcome',(req, res)=>{
 
