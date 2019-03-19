@@ -9,9 +9,9 @@ app.locals.pretty=true;
 app.use(bodyParser.urlencoded({extended:false}));
 
 app.get('/topic/write', (req, res)=>{
-	
+
 	res.render('write');
-	
+
 });
 
 app.get(['/topic', '/topic/:title'], (req, res)=>{
@@ -63,10 +63,10 @@ app.get(['/topic', '/topic/:title'], (req, res)=>{
 
 
 app.post('/topic/write', (req, res)=>{
-	
+
 	let title = req.body.title;
 	let content = req.body.content;
-	
+
 	fs.writeFile('data/'+title, content, (err) => {
 		if(err){
 			res.status(500).send('internal server error!!');
@@ -76,7 +76,7 @@ app.post('/topic/write', (req, res)=>{
 });
 
 app.post('/topic/delete', (req, res)=>{
-	
+
 	fs.unlink('data/'+title, (err) => {
 		if(err){
 			res.status(500).send('internal server error!!');

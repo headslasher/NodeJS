@@ -1,73 +1,37 @@
 const app = require('express')();
 const session = require('express-session');
+const FileStore = require('session-file-store')(session);
 const OrientoStore = require('connect-oriento')(session);
 const bodyparser = require('body-parser');
 const hasher = require("pbkdf2-password")();
 const assert = require("assert");
 const opts = {
-  password: "helloworld"
+  password: "admin"
 };
 const md5 = require('md5');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 
-hasher(opts, (err, pass, salt, hash) => {
- opts.salt = salt;
- hasher(opts, (err, pass, salt, hash2) => {
-	 assert.deepEqual(hash2, hash);
-
-	 // password mismatch
-	 opts.password = "aaa";
-	 hasher(opts, (err, pass, salt, hash2) => {
-		 assert.notDeepEqual(hash2, hash);
-		 console.log("OK");
-	 });
- });
-});
-
 app.use(bodyparser.urlencoded({extended:false}));
 app.use(session({
 	secret:'13r133tw3tr#R!#',
-	resave: false,
-	saveUninitialized : true,
-	store: new OrientoStore({
-	    server: 'host=localhost&port=2424&username=root&password=password&db=demodb'
-	})
+  resave: false,
+  saveUninitialized: true,
+  store: new FileStore()
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(
-	(username, password, done)=>{
-			var userDB={//111111
-											salt : 'pWZXLF3Mul3VJ/HsRVfVRHo+HRZxVB5qNZAfCnMkWLTMHZFl3T6ImShrQDjJDUkszXVjB0QKg2FVro1YI1WO0w==',
-											id:'admin',
-											pw:'1jSJOKDAgwreV+gyV7bvK7n8hLEkwsEVcWlDemEhz1WyAGZmBx7Jr+I/I43yj6Zn8ezJC9N+8qeMLPWYgliUXQS53yx3U/MQgFhWTT2fqMB+CRAsRcAVjTjLetWdpJXfTWPkq8BYWMYxCXsJkbiHrLd1lJyUYodR3dtp7CGQEYM=',
-											name:'adminname'
-									};
 
-			let uid = username;
-			let upw = password;
+var userDB=[
+            {//admin
+            salt : 'zgllAK6yiR4DrV3QzUTajWTmq8Uvt1dDrC7AljsRB3NNHx4fwStJIyWhM3r2lHo0IYUJbthzyK7Oznu43ORhwA==',
+            username:'admin',
+            password:'5HFao6An1wFKmucWIRhxcWndCf0BXEiy9oiuTAY6OIO4uGItKmvZvi38QpsulDkC9WskwAc2P+qAiKg1LLQrPlKXutskWPBCoyiLJ/SgGmbgZuOvcFh2QpoLNHx8V1+hQsx5pZI/RTLu9A7EcBaRZHmmiHL309h7OExaJzfM4iw=',
+            nickname:'adminname'
+            }
+          ];
 
-			for(let i =0;i<userDB.length;i++){
-				let user = userDB[i];
-				if(uid == user.id && md5(upw+user.salt) == user.pw){
-					console.log(uid+'and'+upw);
-					done(null, user);
-				} else {
-					console.log(uid+'and'+upw);
-					done(null, false);
-				}
-			}
-			done(null, false);
-			}
-));
-
-passport.use(new FacebookStrategy({
-    clientID: FACEBOOK_APP_ID,
-    clientSecret: FACEBOOK_APP_SECRET,
-    callbackURL: "http://www.example.com/auth/facebook/callback"
-});
 
 app.get('/count',(req, res)=>{
 	res.redirect('/tmp');
@@ -86,44 +50,131 @@ app.get('/auth/login',(req, res)=>{
 	let output=`
 	<form action='/auth/login' method='POST'>
 		<div>
-			<input type='text' id='id' name='id' size='10' placeholder='login ID'><br>
-			<input type='password' id='pw' name='pw' size='10' placeholder='password'><br>
+			<input type='text' id='username' name='username' size='10' placeholder='username'><br>
+			<input type='password' id='password' name='password' size='10' placeholder='password'><br>
 			<input type='submit' id='submit' name='submit' value='로그인'><br>
 		</div>
 	</form>
+  <a href="/auth/register">go register</a>
 	`;
 	res.send(output);
 });
 
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    let tmpUsername = username;
+    let tmpPassword = password;
+    for(var i = 0 ; i < userDB.length; i++){
+      var user = userDB[i];
+      if(tmpUsername == user.username){
+        return hasher({password:tmpPassword, salt:user.salt}, (err, pass, salt, hash)=>{
+          if(hash == user.password){
+            console.log('LocalStrategyUser', user);
+            done(null, user);
+          } else {
+            console.log('LocalStrategyUserfail');
+            done(null, false);
+          }
+        });
+      }
+    }
+    console.log('LocalStrategyNoUserfail');
+    done(null, false);
+  }
+));
+
+passport.serializeUser(function(user, done) {
+    console.log('serializeUser', user);
+    done(null, user.username);
+});
+
+passport.deserializeUser(function(id, done) {
+    console.log('deserializeUser', id);
+    for(var i=0; i<userDB.length; i++) {
+        var user = userDB[i];
+        if(user.username == id) {
+            return done(null, user);
+        }
+    }
+});
 app.post('/auth/login',
   passport.authenticate('local', { successRedirect: '/welcome',
                                    failureRedirect: '/auth/login',
-                                   failureFlash: false })
+                                   failureFlash: true })
 );
 
-app.get('/welcome',(req, res)=>{
+// app.post('/auth/login',(req, res)=>{
+//   for(var i = 0 ; i < userDB.length; i++){
+//     const user = userDB[i];
+//     let tmpUsername = req.body.username;
+//     let tmpPassword = req.body.password;
+//     if(tmpUsername == user.username){
+//       return hasher({password:tmpPassword, salt:user.salt}, function(err, pass, salt, hash){
+//         if(hash == user.password){
+//           req.session.username = user.username;
+//           req.session.save(function(){
+//           res.redirect('/welcome');
+//           });
+//         } else {
+//           res.send('wrong admin password <a href="/auth/login">login page</a>');
+//         }
+//       });
+//     }
+//   }
+//   res.send('no login <a href="/auth/login">login page</a>');
+// });
 
-	if(req.session.uid=='admin'){
-		let output=`
-			<div>
-				${req.session.uid} Welcome!
-				<a href='/auth/logout'>logout</a>
-			</div>
-		`;
-		res.send(output);
-	} else if(req.session.uid == null){
-		let output=`
-			<div>
-				not login!!
-				<a href='/auth/login'>login</a>
-			</div>
-		`;
-		res.send(output);
-	}
+app.get('/welcome', function(req, res) {
+    if(req.session.nickname) {
+        res.send(`
+            <h1>Hello, ${req.session.nickname} </h1>
+            <a href="/auth/logout">logout</a>
+        `);
+    }else {
+        res.send(`
+            <h1>Welcome</h1>
+            <ul>
+                <li><a href='/auth/login'>Login</a></li>
+                <li><a href='/auth/register'>Register</a></li>
+            </ul>
+        `);
+    }
+});
+
+app.get('/auth/register',(req, res)=>{
+  let output=`
+    <form action='/auth/register' method='POST'>
+      <input type='text' id='username' name='username' placeholder='username'><br>
+      <input type='text' id='password' name='password' placeholder='password'><br>
+      <input type='text' id='nickname' name='nickname' placeholder='nickname'><br>
+      <input type='submit' value='등록하기'>
+    </form>
+  `;
+  res.send(output);
+});
+
+app.post('/auth/register',(req, res)=>{
+  hasher({password:req.body.password}, (err, pass, salt, hash)=>{
+    const user = {
+      salt : salt,
+      username : req.body.username,
+      password : hash,
+      nickname : req.body.nickname
+    };
+    userDB.push(user);
+    req.session.username = req.body.username;
+    req.session.password = req.body.password;
+    req.session.nickname = req.body.nickname;
+    req.session.save(()=>{
+    res.redirect('/welcome')
+    });
+  })
 });
 
 app.get('/auth/logout',(req, res)=>{
-	delete req.session.uid;
+	delete req.session.username;
+  delete req.session.password;
+  delete req.session.nickname;
 	req.session.save(function(){
 		res.redirect('/auth/login');
 	});
