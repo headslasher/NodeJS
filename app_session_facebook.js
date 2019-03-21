@@ -200,25 +200,3 @@ app.get('/auth/logout',(req, res)=>{
 app.listen('3000',()=>{
 	console.log('3000 connected');
 });
-
-
-// app.post('/auth/login',(req, res)=>{
-//   for(var i = 0 ; i < userDB.length; i++){
-//     const user = userDB[i];
-//     let tmpUsername = req.body.username;
-//     let tmpPassword = req.body.password;
-//     if(tmpUsername == user.username){
-//       return hasher({password:tmpPassword, salt:user.salt}, function(err, pass, salt, hash){
-//         if(hash == user.password){
-//           req.session.username = user.username;
-//           req.session.save(function(){
-//           res.redirect('/welcome');
-//           });
-//         } else {
-//           res.send('wrong admin password <a href="/auth/login">login page</a>');
-//         }
-//       });
-//     }
-//   }
-//   res.send('no login <a href="/auth/login">login page</a>');
-// });
