@@ -1,16 +1,13 @@
 extends ../layout
 block content
     article
-        form(action='/topic/' + topic.id + '/edit' method='post')
-            p
-                input(type='text' name='title' value=topic.title placeholder='title')
-            p
-                textarea(name='description' placeholder='description')
-                    =topic.description
-            p
-                input(type='text' name='author' value=topic.author placeholder='author')
-            p
-                input(type='submit')
-    ul
-        li
-            a(href='/topic/add') add
+      - rid = encodeURIComponent(topic['@rid'])
+      form(action='/topic/'+rid+'/edit' method='post')
+        p
+          input(type='text' name='title' placeholder='title' value=topic.title)
+        p
+          textarea(name='description')=topic.description
+        p
+          input(type='author' name='author' placeholder='author' value=topic.author)
+        p
+          input(type='submit')

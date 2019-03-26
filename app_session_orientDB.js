@@ -13,9 +13,6 @@ app.get('/welcome', (req, res) => {
     }
 });
 
-const auth = require('./routes/orientDB/auth')(passport);//'/auth'라우터
-app.use('/auth', auth);
-
 app.listen('3000',()=>{
 	console.log('3000 connected');
 });

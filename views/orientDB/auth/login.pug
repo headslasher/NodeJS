@@ -1,14 +1,12 @@
-head
-  title NodeJS
-  script(type='text/javascript').
-
-form(action='/auth/login' method='POST')
-  div
-    input#username(type='text' name='username' size='10' placeholder='username')
-    br
-    input#password(type='password' name='password' size='10' placeholder='password')
-    br
-    input#submit(type='submit' name='submit' value='로그인')
-    br
-a(href='/auth/register') REGISTER
-a(href='/auth/facebook') Login with Facebook
+extends ../layout
+block content
+  form(action='/auth/login' method='POST')
+    div
+      input#username(type='text' name='username' size='10' placeholder='username')
+      br
+      input#password(type='password' name='password' size='10' placeholder='password')
+      br
+      input#submit(type='submit' name='submit' value='로그인')
+      br
+  a(href='/auth/register') REGISTER
+  a(href='/auth/facebook') Login with Facebook

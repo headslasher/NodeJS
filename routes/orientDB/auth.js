@@ -13,11 +13,14 @@ module.exports = (passport) => {
             ];
 
   route.get('/login',(req, res)=>{
-    res.render('auth/login');
+    const sql = 'SELECT * FROM topic';
+    db.query(sql).then((topics) => {
+      res.render('auth/login', {topics:topics});
+    });
   });
 
   route.post('/login',
-    passport.authenticate('local', { successRedirect: '/welcome',
+    passport.authenticate('local', { successRedirect: '/topic',
                                      failureRedirect: '/auth/login',
                                      failureFlash: true })
   );
@@ -25,11 +28,14 @@ module.exports = (passport) => {
   route.get('/facebook', passport.authenticate('facebook', { scope: 'email' }));
 
   route.get('/facebook/callback',
-    passport.authenticate('facebook', { successRedirect: '/welcome',
+    passport.authenticate('facebook', { successRedirect: '/topic',
                                         failureRedirect: '/auth/login' }));
 
   route.get('/register',(req, res)=>{
-    res.render('auth/register');
+    const sql = 'SELECT * FROM topic';
+    db.query(sql).then((topics) => {
+      res.render('auth/register', {topics:topics});
+    });
   });
 
   route.post('/register',(req, res)=>{
@@ -55,7 +61,7 @@ module.exports = (passport) => {
   route.get('/logout', (req, res) => {
       req.logout();
       req.session.save(function() {
-          res.redirect('/auth/login');
+          res.redirect('/topic');
       });
   });
 
